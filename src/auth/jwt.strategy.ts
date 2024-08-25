@@ -7,7 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { config as dotenvConfig } from 'dotenv';
-import { User } from 'src/users/entities/user.entity';
+import { User } from '../users/entities/user.entity';
 dotenvConfig({ path: '.env' });
 
 @Injectable()

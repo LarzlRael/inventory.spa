@@ -1,4 +1,4 @@
-import { SellDetail } from 'src/sells/entities/sellDetail.entity';
+import { SellDetail } from '../../sells/entities/sellDetail.entity';
 import {
   Column,
   Entity,
@@ -8,22 +8,14 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-/* ID_Producto(PK);
-Nombre;
-Descripción;
-Precio_Compra;
-Precio_Venta;
-Cantidad_Stock;
-ID_Categoria(FK);
-ID_Proveedor(FK); */
-import { Category } from './category.entity';
+import { Category, User } from '../../entities';
 
 @Entity({ name: 'Products' })
 export class Product {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ unique: true })
+  @Column()
   name: string;
 
   @Column()
@@ -42,6 +34,10 @@ export class Product {
   sellDetails: SellDetail[];
 
   @ManyToOne(() => Category, (category) => category.products)
-  @JoinColumn({ name: 'idCategoria' })
+  @JoinColumn({ name: 'idCategory' })
   category: Category;
+
+  @ManyToOne(() => User, (user) => user.products)
+  @JoinColumn({ name: 'addedBy' }) // Nombre de la columna en la base de datos
+  addedBy: User; // Usuario que agregó el producto
 }

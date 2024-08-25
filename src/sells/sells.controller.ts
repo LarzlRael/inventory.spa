@@ -1,15 +1,30 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Delete,
+  UseGuards,
+} from '@nestjs/common';
 import { SellsService } from './sells.service';
-import { CreateSellDto } from './dto/create-sell.dto';
-import { UpdateSellDto } from './dto/update-sell.dto';
+import { CreateSellDto, createSellSchema } from './dto/create-sell.dto';
+import { ZodValidationPipe } from '../pipes/zod.validation.pipe';
+import { GetUser } from '../pipes/get.user.decorator';
+import { AuthGuard } from '@nestjs/passport';
+import { User } from '../entities';
 
 @Controller('sells')
 export class SellsController {
   constructor(private readonly sellsService: SellsService) {}
 
+  @UseGuards(AuthGuard('jwt'))
   @Post()
-  create(@Body() createSellDto: CreateSellDto) {
-    return this.sellsService.create(createSellDto);
+  create(
+    @GetUser() user: User,
+    @Body(new ZodValidationPipe(createSellSchema)) createSellDto: CreateSellDto,
+  ) {
+    return this.sellsService.create(user, createSellDto);
   }
 
   @Get()
@@ -22,10 +37,10 @@ export class SellsController {
     return this.sellsService.findOne(+id);
   }
 
-  @Patch(':id')
+  /* @Patch(':id')
   update(@Param('id') id: string, @Body() updateSellDto: UpdateSellDto) {
     return this.sellsService.update(+id, updateSellDto);
-  }
+  } */
 
   @Delete(':id')
   remove(@Param('id') id: string) {

@@ -1,4 +1,5 @@
-import { Sell } from 'src/sells/entities/sell.entity';
+import { Sell, Product } from '../../entities';
+
 import {
   Column,
   Entity,
@@ -31,4 +32,7 @@ export class User {
 
   @OneToMany(() => Sell, (sell) => sell.user)
   sells: Sell[];
+
+  @OneToMany(() => Product, (product) => product.addedBy)
+  products: Product[]; // Productos agregados por el usuario
 }

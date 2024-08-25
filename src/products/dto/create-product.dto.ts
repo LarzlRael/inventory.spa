@@ -1,1 +1,12 @@
-export class CreateProductDto {}
+import { z } from 'zod';
+
+export const createProductSchema = z.object({
+  name: z.string().min(5),
+  description: z.string(),
+  purchasePrice: z.number().positive(),
+  SalePrice: z.number().positive(),
+  stockQuantity: z.number().int().positive(),
+  idCategory: z.number().int().positive(),
+});
+
+export type CreateProductDto = z.infer<typeof createProductSchema>;

@@ -1,0 +1,7 @@
+export { User } from '../users/entities/user.entity';
+
+export { Sell } from '../sells/entities/sell.entity';
+export { SellDetail } from '../sells/entities/sellDetail.entity';
+
+export { Category } from '../products/entities/category.entity';
+export { Product } from '../products/entities/product.entity';
