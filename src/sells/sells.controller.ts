@@ -27,6 +27,7 @@ export class SellsController {
     return this.sellsService.create(user, createSellDto);
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Get()
   findAll() {
     return this.sellsService.findAll();

@@ -1,5 +1,9 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import { CreateProductDto } from './dto/create-product.dto';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
+import { CreateProductDto, UpdateProductDto } from './dto/create-product.dto';
 /* import { UpdateProductDto } from './dto/update-product.dto'; */
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -10,7 +14,7 @@ import { User, Product, Category } from '../entities';
 export class ProductsService {
   constructor(
     @InjectRepository(Product)
-    private Product: Repository<Product>,
+    private productRepository: Repository<Product>,
     @InjectRepository(Category)
     private categoryRepository: Repository<Category>,
   ) {}
@@ -20,28 +24,56 @@ export class ProductsService {
     });
     console.log(category);
     try {
-      const createNewProduct = this.Product.create({
+      const createNewProduct = this.productRepository.create({
         ...createProductDto,
         category: category,
         addedBy: user,
       });
-      return await this.Product.save(createNewProduct);
+      return await this.productRepository.save(createNewProduct);
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
   }
 
   async findAll() {
-    return await this.Product.find();
+    return await this.productRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} product`;
+  async findOne(id: number) {
+    try {
+      const product = await this.productRepository.findOne({
+        where: { id: id },
+      });
+
+      if (product !== null) {
+        return product;
+      }
+      new NotFoundException();
+    } catch (error) {
+      new InternalServerErrorException(error);
+    }
   }
 
-  /*   update(id: number, updateProductDto: UpdateProductDto) {
-    return `This action updates a #${id} product`;
-  } */
+  async updateProduct(
+    user: User,
+    id: number,
+    updateProductDto: UpdateProductDto,
+  ) {
+    try {
+      const getProduct = await this.findOne(id);
+      if (getProduct) {
+        await this.productRepository.save({
+          ...getProduct,
+          ...updateProductDto,
+          addedBy: user,
+        });
+      } else {
+        new NotFoundException();
+      }
+    } catch (error) {
+      new InternalServerErrorException(error);
+    }
+  }
 
   remove(id: number) {
     return `This action removes a #${id} product`;

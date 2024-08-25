@@ -90,8 +90,8 @@ export class SellsService {
     return newSell;
   }
 
-  findAll() {
-    return `This action returns all sells`;
+  async findAll() {
+    return await this.sellRepository.find();
   }
 
   findOne(id: number) {

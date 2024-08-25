@@ -5,3 +5,5 @@ export { SellDetail } from '../sells/entities/sellDetail.entity';
 
 export { Category } from '../products/entities/category.entity';
 export { Product } from '../products/entities/product.entity';
+
+export { Role } from './../roles/entities/role.entity';

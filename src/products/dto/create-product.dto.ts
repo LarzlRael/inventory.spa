@@ -9,4 +9,14 @@ export const createProductSchema = z.object({
   idCategory: z.number().int().positive(),
 });
 
+export const updateProductSchema = z.object({
+  name: z.string().min(5),
+  description: z.string(),
+  purchasePrice: z.number().positive(),
+  SalePrice: z.number().positive(),
+  stockQuantity: z.number().int().positive(),
+  idCategory: z.number().int().positive(),
+});
+
 export type CreateProductDto = z.infer<typeof createProductSchema>;
+export type UpdateProductDto = z.infer<typeof updateProductSchema>;

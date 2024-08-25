@@ -1,12 +1,13 @@
-import { Sell, Product } from '../../entities';
-
 import {
   Column,
   Entity,
   OneToOne,
   PrimaryGeneratedColumn,
   OneToMany,
+  ManyToMany,
+  JoinTable,
 } from 'typeorm';
+import { Sell, Product, Role } from '../../entities';
 
 @Entity({ name: 'users' })
 export class User {
@@ -35,4 +36,18 @@ export class User {
 
   @OneToMany(() => Product, (product) => product.addedBy)
   products: Product[]; // Productos agregados por el usuario
+
+  @ManyToMany(() => Role, (role) => role.users, { cascade: true })
+  @JoinTable({
+    name: 'user_roles',
+    joinColumn: {
+      name: 'user_id',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'role_id',
+      referencedColumnName: 'id',
+    },
+  })
+  roles: Role[];
 }
