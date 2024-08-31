@@ -24,18 +24,13 @@ export class SellsController {
     @GetUser() user: User,
     @Body(new ZodValidationPipe(createSellSchema)) createSellDto: CreateSellDto,
   ) {
-    return this.sellsService.create(user, createSellDto);
+    return this.sellsService.createNewSell(user, createSellDto);
   }
 
   @UseGuards(AuthGuard('jwt'))
-  @Get()
-  findAll() {
-    return this.sellsService.findAll();
-  }
-
-  @Get(':id')
+  @Get('find-sell-by-id/:id')
   findOne(@Param('id') id: string) {
-    return this.sellsService.findOne(+id);
+    return this.sellsService.findSellBydId(+id);
   }
 
   /* @Patch(':id')

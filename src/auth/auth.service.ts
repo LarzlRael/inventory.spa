@@ -30,6 +30,7 @@ export class AuthService {
     } catch (error) {
       /* TODO remove this */
       console.log(error.code);
+      throw new UnauthorizedException();
       /* if (error.code === '23505') {
         // duplicate user
         throw new ConflictException('Username or email already exists');

@@ -10,6 +10,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { Product, User, SellDetail } from '../entities';
+import { ClientService } from 'src/users/services';
 
 @Injectable()
 export class SellsService {
@@ -21,8 +22,10 @@ export class SellsService {
 
     @InjectRepository(Product)
     private productRepository: Repository<Product>,
+
+    private clientService: ClientService,
   ) {}
-  async create(user: User, createSellDto: CreateSellDto) {
+  async createNewSell(user: User, createSellDto: CreateSellDto) {
     const { clientName, products } = createSellDto;
 
     // Inicializa la venta
@@ -72,11 +75,15 @@ export class SellsService {
       sellDetails.push(sellDetail); // Agregar el detalle de la venta al array
     }
 
+    const getClient = await this.clientService.findOneClient(
+      createSellDto.idClient,
+    );
     // Guardar la venta y obtener el ID generado
     const newSell = await this.sellRepository.save({
       ...sell,
       totalVenta: totalSell,
       user: user,
+      client: getClient,
     });
     console.log(newSell);
 
@@ -90,13 +97,18 @@ export class SellsService {
     return newSell;
   }
 
-  async findAll() {
-    return await this.sellRepository.find();
+  async findSellBydId(id: number) {
+    const sell = await this.sellRepository.findOne({
+      where: { idSell: id },
+      relations: ['client','sellDetail'],
+    });
+    if (!sell) {
+      throw new NotFoundException(`Sell with ID ${id} not found`);
+    }
+    return sell;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} sell`;
-  }
+ 
 
   /*  update(id: number, updateSellDto: UpdateSellDto) {
     return `This action updates a #${id} sell`;

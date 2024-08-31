@@ -7,6 +7,7 @@ export const sellProductSchema = z.object({
 export const createSellSchema = z.object({
   clientName: z.string().min(5),
   products: z.array(sellProductSchema),
+  idClient: z.number().int(),
 });
 
 export type SellProductDto = z.infer<typeof sellProductSchema>;

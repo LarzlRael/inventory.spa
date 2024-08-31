@@ -15,17 +15,25 @@ import { AuthGuard } from '@nestjs/passport';
 import { User } from '../../entities';
 
 import { SupplierService } from '../services';
+import { NewSupplierDto, newSupplierSchema } from '../dto/create-supllier.dto';
 
 @Controller('suppliers')
 export class SuppliersController {
   constructor(private readonly supplierService: SupplierService) {}
 
-  /* @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwt'))
   @Post()
   create(
     @GetUser() user: User,
-    @Body(new ZodValidationPipe(createSellSchema)) createSellDto: CreateSellDto,
+    @Body(new ZodValidationPipe(newSupplierSchema)) createSupplierDto,
   ) {
-    return this.sellsService.create(user, createSellDto);
-  } */
+    return this.supplierService.create(createSupplierDto);
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Get()
+  findAll(
+    ) {
+    return this.supplierService.findAllSuppliers();
+  }
 }

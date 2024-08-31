@@ -15,14 +15,22 @@ export class Product {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({
+    unique: true,
+  })
   name: string;
 
   @Column()
   description: string;
 
-  @Column()
+  @Column({ type: 'decimal', precision: 10, scale: 2 })
   purchasePrice: number;
+
+  /* @Column({ type: 'decimal', precision: 10, scale: 2 })
+  suggestedSalePrice: number;
+
+  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  finalSalePrice: number; */
 
   @Column()
   SalePrice: number;

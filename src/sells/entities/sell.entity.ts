@@ -32,6 +32,7 @@ export class Sell {
   })
   sellDetail: SellDetail[];
 
-  @JoinColumn({ name: 'idCliente' }) // Nombre de la columna de clave foránea
+  @ManyToOne(() => Client, (client) => client.sells)  // Relación con la entidad Client
+  @JoinColumn({ name: 'idCliente' })  // Nombre de la columna de clave foránea
   client: Client;
 }
