@@ -8,7 +8,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-import { Category, User } from '../../entities';
+import { Category, User, Supplier, DetailOrder } from '../../entities';
 
 @Entity({ name: 'Products' })
 export class Product {
@@ -40,4 +40,10 @@ export class Product {
   @ManyToOne(() => User, (user) => user.products)
   @JoinColumn({ name: 'addedBy' }) // Nombre de la columna en la base de datos
   addedBy: User; // Usuario que agregó el producto
+
+  @ManyToOne(() => Supplier, (provider) => provider.products)
+  supplier: Supplier;
+
+  @OneToMany(() => DetailOrder, (detailOrder) => detailOrder.product)
+  detailOrders: DetailOrder[];
 }

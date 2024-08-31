@@ -11,6 +11,7 @@ import { SellsModule } from './sells/sells.module';
 import { APP_PIPE } from '@nestjs/core';
 import { ZodValidationPipe } from 'nestjs-zod';
 import { RolesModule } from './roles/roles.module';
+import { OrdersModule } from './orders/orders.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { RolesModule } from './roles/roles.module';
     AuthModule,
     SellsModule,
     RolesModule,
+    OrdersModule,
   ],
   controllers: [AppController],
   providers: [

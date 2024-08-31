@@ -8,7 +8,7 @@ import {
 
 import { Product, Sell } from '../../entities';
 
-@Entity('detalles_venta')
+@Entity('SellDetail')
 export class SellDetail {
   @PrimaryGeneratedColumn()
   idDetail: number;

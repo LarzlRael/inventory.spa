@@ -7,9 +7,9 @@ import {
   OneToMany,
 } from 'typeorm';
 
-import { User, SellDetail } from '../../entities';
+import { User, SellDetail, Client } from '../../entities';
 
-@Entity('ventas')
+@Entity('sells')
 export class Sell {
   @PrimaryGeneratedColumn()
   idSell: number;
@@ -31,4 +31,7 @@ export class Sell {
     cascade: true,
   })
   sellDetail: SellDetail[];
+
+  @JoinColumn({ name: 'idCliente' }) // Nombre de la columna de clave foránea
+  client: Client;
 }
