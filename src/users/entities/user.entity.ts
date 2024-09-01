@@ -7,7 +7,7 @@ import {
   ManyToMany,
   JoinTable,
 } from 'typeorm';
-import { Sell, Product, Role } from '../../entities';
+import { Sell, Product, Role, Order } from '../../entities';
 
 @Entity({ name: 'users' })
 export class User {
@@ -50,4 +50,7 @@ export class User {
     },
   })
   roles: Role[];
+
+  @OneToMany(() => Order, (order) => order.user) // Relación con Order
+  orders: Order[];
 }

@@ -7,7 +7,7 @@ import {
   OneToMany,
 } from 'typeorm';
 
-import { DetailOrder } from '../../entities';
+import { DetailOrder, User } from '../../entities';
 
 @Entity()
 export class Order {
@@ -17,6 +17,12 @@ export class Order {
   @Column()
   date: Date;
 
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  createdAt: Date;
+
   @OneToMany(() => DetailOrder, (detailOrder) => detailOrder.order)
   detailOrders: DetailOrder[];
+
+  @ManyToOne(() => User, (user) => user.orders) // Relación correcta con User
+  user: User;
 }

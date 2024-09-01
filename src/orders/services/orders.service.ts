@@ -9,6 +9,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { Order } from '../entities/';
+import { CreatesOrderDto } from '../../products/dto/create-new-order.dto';
 
 @Injectable()
 export class OrdersService {
@@ -16,4 +17,6 @@ export class OrdersService {
     @InjectRepository(Order)
     private sellRepository: Repository<Order>,
   ) {}
+
+  async createNewOrder(createNewOrderDto: CreatesOrderDto) {}
 }
