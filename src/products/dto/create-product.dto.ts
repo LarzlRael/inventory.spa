@@ -7,6 +7,7 @@ export const createProductSchema = z.object({
   SalePrice: z.number().positive(),
   stockQuantity: z.number().int().positive(),
   idCategory: z.number().int().positive(),
+  idSupplier: z.number().int().positive().optional(),
 });
 
 export const updateProductSchema = z.object({

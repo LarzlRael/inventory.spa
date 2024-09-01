@@ -30,7 +30,7 @@ export class ProductsController {
     /* @Body() createProductDto: CreateProductDto, */
     @Body(new ZodPipe(createProductSchema)) createProductDto,
   ) {
-    return this.productsService.create(user, createProductDto);
+    return this.productsService.createNewProduct(user, createProductDto);
   }
 
   @Get()

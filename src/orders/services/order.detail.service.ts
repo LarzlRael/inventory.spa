@@ -8,6 +8,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { DetailOrder } from '../entities/';
+import { Product, Order } from '../../entities';
 
 @Injectable()
 export class OrdersDetailService {
@@ -15,4 +16,16 @@ export class OrdersDetailService {
     @InjectRepository(DetailOrder)
     private sellRepository: Repository<DetailOrder>,
   ) {}
+  async createNewDetailOrder(idOrder: Order, idProduct: Product) {
+    try {
+      const newDetailOrder = this.sellRepository.create({
+        order: idOrder,
+        product: idProduct,
+        quantity: 1,
+      });
+      return await this.sellRepository.save(newDetailOrder);
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
 }

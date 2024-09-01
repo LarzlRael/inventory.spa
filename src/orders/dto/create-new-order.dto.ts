@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from 'nestjs-zod/z';
 
 export const createNewOrderProductSchema = z.object({
   name: z.string().min(5),
@@ -7,14 +7,13 @@ export const createNewOrderProductSchema = z.object({
   SalePrice: z.number().positive().default(0).optional(),
   stockQuantity: z.number().int().positive(),
   idCategory: z.number().int().positive(),
+  quantity: z.number().int().positive(),
+  idSupplier: z.number().int().positive(),
 });
 
-
-
-export const createProductsOrderSchema = z.object({
-  
+export const createOrderSchema = z.object({
   products: z.array(createNewOrderProductSchema),
-  date: z.date(),
+  date: z.dateString(),
 });
 
-export type CreatesOrderDto = z.infer<typeof createProductsOrderSchema>;
+export type CreatesOrderDto = z.infer<typeof createOrderSchema>;

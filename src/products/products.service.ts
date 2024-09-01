@@ -9,6 +9,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { User, Product, Category } from '../entities';
+import { SupplierService } from '../orders/services/suppliers.service';
 
 @Injectable()
 export class ProductsService {
@@ -17,12 +18,15 @@ export class ProductsService {
     private productRepository: Repository<Product>,
     @InjectRepository(Category)
     private categoryRepository: Repository<Category>,
+
+    /* private supplierService: SupplierService, */
   ) {}
-  async create(user: User, createProductDto: CreateProductDto) {
+  async createNewProduct(user: User, createProductDto: CreateProductDto) {
+    console.log(createProductDto);
     const category = await this.categoryRepository.findOne({
       where: { idCategory: createProductDto.idCategory },
     });
-    console.log(category);
+
     try {
       const createNewProduct = this.productRepository.create({
         ...createProductDto,
@@ -31,6 +35,7 @@ export class ProductsService {
       });
       return await this.productRepository.save(createNewProduct);
     } catch (error) {
+      console.log(error);
       throw new InternalServerErrorException(error);
     }
   }
