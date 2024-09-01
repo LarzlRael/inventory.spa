@@ -6,8 +6,8 @@ import {
 
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Supplier } from '../entities';
-import { NewSupplierDto } from '../dto/create-supllier.dto';
+import { Supplier } from '../orders/entities';
+import { NewSupplierDto } from './dto/create-supllier.dto';
 @Injectable()
 export class SupplierService {
   constructor(
@@ -27,6 +27,18 @@ export class SupplierService {
   async findAllSuppliers() {
     try {
       return await this.suppliersRepository.find();
+    } catch (error) {
+      throw new NotFoundException(error.message);
+    }
+  }
+  async getOneSupplierById(id: number | null): Promise<Supplier> {
+    try {
+      if (!id) return null;
+      const getOneSupplier = await this.suppliersRepository.findOne({
+        where: { id: id },
+      });
+
+      return getOneSupplier ?? getOneSupplier;
     } catch (error) {
       throw new NotFoundException(error.message);
     }

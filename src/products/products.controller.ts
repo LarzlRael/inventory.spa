@@ -57,4 +57,9 @@ export class ProductsController {
   remove(@Param('id') id: string) {
     return this.productsService.remove(+id);
   }
+  @UseGuards(AuthGuard('jwt'))
+  @Get('/stock-product/:id')
+  getStockProduct(@Param('id') id: string) {
+    return this.productsService.productsStock(+id);
+  }
 }

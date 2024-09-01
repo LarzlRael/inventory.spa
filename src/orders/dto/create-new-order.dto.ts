@@ -8,7 +8,7 @@ export const createNewOrderProductSchema = z.object({
   stockQuantity: z.number().int().positive(),
   idCategory: z.number().int().positive(),
   quantity: z.number().int().positive(),
-  idSupplier: z.number().int().positive(),
+  idSupplier: z.number().int().positive().optional(),
 });
 
 export const createOrderSchema = z.object({

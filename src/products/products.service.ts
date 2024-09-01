@@ -9,7 +9,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { User, Product, Category } from '../entities';
-import { SupplierService } from '../orders/services/suppliers.service';
+import { SupplierService } from '../supplier/suppliers.service';
 
 @Injectable()
 export class ProductsService {
@@ -19,7 +19,7 @@ export class ProductsService {
     @InjectRepository(Category)
     private categoryRepository: Repository<Category>,
 
-    /* private supplierService: SupplierService, */
+    private supplierService: SupplierService,
   ) {}
   async createNewProduct(user: User, createProductDto: CreateProductDto) {
     console.log(createProductDto);
@@ -28,9 +28,13 @@ export class ProductsService {
     });
 
     try {
+      const getOneSupplier = await this.supplierService.getOneSupplierById(
+        createProductDto.idSupplier,
+      );
       const createNewProduct = this.productRepository.create({
         ...createProductDto,
         category: category,
+        supplier: getOneSupplier,
         addedBy: user,
       });
       return await this.productRepository.save(createNewProduct);
@@ -82,5 +86,20 @@ export class ProductsService {
 
   remove(id: number) {
     return `This action removes a #${id} product`;
+  }
+
+  async productsStock(id: number) {
+    try {
+      const product = await this.productRepository.findOne({
+        where: { id: id },
+      });
+      if (!product) throw new NotFoundException('Product not found');
+      return {
+        productName: product.name,
+        stock: product.stockQuantity,
+      };
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
   }
 }

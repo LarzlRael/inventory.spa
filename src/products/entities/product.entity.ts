@@ -15,12 +15,12 @@ export class Product {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({
-    unique: true,
-  })
+  @Column()
   name: string;
 
-  @Column()
+  @Column({
+    nullable: true,
+  })
   description: string;
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })
