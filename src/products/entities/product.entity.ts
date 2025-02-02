@@ -1,16 +1,25 @@
-import { SellDetail } from '../../sells/entities/sellDetail.entity';
+import { Rental } from '../../rental/entities/rental.entity';
+import { InventoryMovement } from '../../inventory/entities/inventory-movements.entity';
 import {
   Column,
+  CreateDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
+  UpdateDateColumn
 } from 'typeorm';
 
-import { Category, User, Supplier, DetailOrder } from '../../entities';
+import {
+  Category,
+  User,
+  Supplier,
+  DetailOrder,
+  SellDetail,
+} from '../../entities';
 
-@Entity({ name: 'Products' })
+@Entity('products')
 export class Product {
   @PrimaryGeneratedColumn()
   id: number;
@@ -41,12 +50,15 @@ export class Product {
   @OneToMany(() => SellDetail, (sellDetail) => sellDetail.product)
   sellDetails: SellDetail[];
 
+  @OneToMany(() => Rental, (rental) => rental.product)
+  rentals: Rental[];
+
   @ManyToOne(() => Category, (category) => category.products)
-  @JoinColumn({ name: 'idCategory' })
+  @JoinColumn({ name: 'id_category' })
   category: Category;
 
   @ManyToOne(() => User, (user) => user.products)
-  @JoinColumn({ name: 'addedBy' }) // Nombre de la columna en la base de datos
+  @JoinColumn({ name: 'added_by' }) // Nombre de la columna en la base de datos
   addedBy: User; // Usuario que agregó el producto
 
   @ManyToOne(() => Supplier, (provider) => provider.products)
@@ -54,4 +66,25 @@ export class Product {
 
   @OneToMany(() => DetailOrder, (detailOrder) => detailOrder.product)
   detailOrders: DetailOrder[];
+
+  @OneToMany(
+    () => InventoryMovement,
+    (inventoryMovement) => inventoryMovement.product,
+  )
+  movements: InventoryMovement[];
+
+
+
+  @CreateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+  })
+  createdAt: Date;
+
+  @UpdateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+    onUpdate: 'CURRENT_TIMESTAMP(6)',
+  })
+  updatedAt: Date;
 }

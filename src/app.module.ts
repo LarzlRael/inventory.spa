@@ -20,6 +20,7 @@ import { SuppliersModule } from './supplier/supplier.module';
       isGlobal: true,
       load: [typeorm],
     }),
+
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) =>
@@ -31,7 +32,7 @@ import { SuppliersModule } from './supplier/supplier.module';
     SellsModule,
     RolesModule,
     OrdersModule,
-    SuppliersModule
+    SuppliersModule,
   ],
   controllers: [AppController],
   providers: [

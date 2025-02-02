@@ -6,13 +6,20 @@ import { CategoryController } from './category.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Product } from './entities/product.entity';
 import { Category } from './entities/category.entity';
-import { OrdersModule } from 'src/orders/orders.module';
-import { SuppliersModule } from 'src/supplier/supplier.module';
+
+/* import { InventoryMovement } from 'src/inventory/entities/inventory.entity'; */
+import { ProductSubscriber } from './product.subscriber';
+import { SuppliersModule } from '../supplier/supplier.module';
+import { InventoryMovementModule } from 'src/inventory/inventory.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Product, Category]),SuppliersModule],
+  imports: [
+    TypeOrmModule.forFeature([Product, Category]),
+    SuppliersModule,
+    InventoryMovementModule,
+  ],
   controllers: [ProductsController, CategoryController],
-  providers: [ProductsService, CategoryService],
+  providers: [ProductsService, CategoryService, ProductSubscriber],
   exports: [ProductsService],
 })
 export class ProductsModule {}

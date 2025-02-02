@@ -6,10 +6,13 @@ import {
   OneToMany,
   ManyToMany,
   JoinTable,
+  CreateDateColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { Sell, Product, Role } from '../../entities';
+import { Rental } from '../../rental/entities/rental.entity';
 
-@Entity({ name: 'clients' })
+@Entity('clients')
 export class Client {
   @PrimaryGeneratedColumn()
   id: number;
@@ -22,8 +25,6 @@ export class Client {
   })
   description: string;
 
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  createdAt: Date;
 
   @Column({
     nullable: true,
@@ -32,4 +33,20 @@ export class Client {
 
   @OneToMany(() => Sell, (sell) => sell.client) // Relación con la entidad Sell
   sells: Sell[];
+
+  @OneToMany(() => Sell, (rental) => rental.client) // Relación con la entidad Sell
+  rentals: Rental[];
+
+  @CreateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+  })
+  createdAt: Date;
+
+  @UpdateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+    onUpdate: 'CURRENT_TIMESTAMP(6)',
+  })
+  updatedAt: Date;
 }

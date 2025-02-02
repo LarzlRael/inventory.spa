@@ -6,10 +6,15 @@ import {
   OneToMany,
   ManyToMany,
   JoinTable,
+  CreateDateColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { Sell, Product, Role, Order } from '../../entities';
 
-@Entity({ name: 'users' })
+import { Rental } from '../../rental/entities/rental.entity';
+import { InventoryMovement } from '../../inventory/entities/inventory-movements.entity';
+
+@Entity('users')
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
@@ -19,9 +24,6 @@ export class User {
 
   @Column()
   password: string;
-
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  createdAt: Date;
 
   @Column({ nullable: true, default: 'web' })
   authStrategy: string;
@@ -33,6 +35,9 @@ export class User {
 
   @OneToMany(() => Sell, (sell) => sell.user)
   sells: Sell[];
+
+  @OneToMany(() => Rental, (rental) => rental.user)
+  rentals: Rental[];
 
   @OneToMany(() => Product, (product) => product.addedBy)
   products: Product[]; // Productos agregados por el usuario
@@ -53,4 +58,20 @@ export class User {
 
   @OneToMany(() => Order, (order) => order.user) // Relación con Order
   orders: Order[];
+
+  @OneToMany(() => InventoryMovement, (movement) => movement.user)
+  inventoryMovements: InventoryMovement[];
+
+  @CreateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+  })
+  createdAt: Date;
+
+  @UpdateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+    onUpdate: 'CURRENT_TIMESTAMP(6)',
+  })
+  updatedAt: Date;
 }

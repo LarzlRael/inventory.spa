@@ -1,8 +1,15 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
-import { Order ,Product } from '../../entities';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  JoinColumn,
+  UpdateDateColumn,
+  CreateDateColumn,
+} from 'typeorm';
+import { Order, Product } from '../../entities';
 
-
-@Entity()
+@Entity('detail_order')
 export class DetailOrder {
   @PrimaryGeneratedColumn()
   id: number;
@@ -15,4 +22,17 @@ export class DetailOrder {
 
   @ManyToOne(() => Product, (product) => product.detailOrders)
   product: Product;
+
+  @CreateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+  })
+  createdAt: Date;
+
+  @UpdateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+    onUpdate: 'CURRENT_TIMESTAMP(6)',
+  })
+  updatedAt: Date;
 }

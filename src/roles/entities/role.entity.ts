@@ -4,6 +4,8 @@ import {
   Column,
   ManyToMany,
   JoinTable,
+  CreateDateColumn,
+  UpdateDateColumn
 } from 'typeorm';
 import { Permission } from './permission.entity';
 import { User } from '../../entities';
@@ -37,4 +39,18 @@ export class Role {
 
   @ManyToMany(() => User, (user) => user.roles)
   users: User[];
+
+
+  @CreateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+  })
+  createdAt: Date;
+
+  @UpdateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+    onUpdate: 'CURRENT_TIMESTAMP(6)',
+  })
+  updatedAt: Date;
 }

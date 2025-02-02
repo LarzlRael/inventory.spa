@@ -5,11 +5,13 @@ import {
   PrimaryGeneratedColumn,
   JoinColumn,
   OneToMany,
+  CreateDateColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 
 import { DetailOrder, User } from '../../entities';
 
-@Entity()
+@Entity('orders')
 export class Order {
   @PrimaryGeneratedColumn()
   id: number;
@@ -17,8 +19,18 @@ export class Order {
   @Column()
   date: Date;
 
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  @CreateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+  })
   createdAt: Date;
+
+  @UpdateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+    onUpdate: 'CURRENT_TIMESTAMP(6)',
+  })
+  updatedAt: Date;
 
   @OneToMany(() => DetailOrder, (detailOrder) => detailOrder.order)
   detailOrders: DetailOrder[];

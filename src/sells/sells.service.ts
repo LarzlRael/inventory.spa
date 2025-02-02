@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import { CreateSellDto } from './dto/create-sell.dto';
@@ -11,6 +12,8 @@ import { Repository } from 'typeorm';
 
 import { Product, User, SellDetail } from '../entities';
 import { ClientService } from 'src/users/services';
+import { InventoryService } from '../inventory/inventory.service';
+import { ProductsService } from 'src/products/products.service';
 
 @Injectable()
 export class SellsService {
@@ -20,10 +23,9 @@ export class SellsService {
     @InjectRepository(SellDetail)
     private sellDetail: Repository<SellDetail>,
 
-    @InjectRepository(Product)
-    private productRepository: Repository<Product>,
-
+    private productService: ProductsService,
     private clientService: ClientService,
+    private inventoryService: InventoryService,
   ) {}
   async createNewSell(user: User, createSellDto: CreateSellDto) {
     const { clientName, products } = createSellDto;
@@ -33,82 +35,109 @@ export class SellsService {
       clientName,
     });
 
+    const queryRunner =
+      this.sellRepository.manager.connection.createQueryRunner();
+    await queryRunner.startTransaction();
+
     let totalSell = 0;
     const sellDetails = []; // Array para almacenar los detalles de la venta
+    const updateProduct = [];
+    const createMovement = [];
 
-    for (const prod of products) {
-      const product = await this.productRepository.findOne({
-        where: { id: prod.idProduct },
+    try {
+      const getProductsAndVerifyExists = await Promise.all(
+        products.map(async (prod) =>
+          this.productService.findProductByIdAndVerifyStock(
+            prod.idProduct,
+            prod.quantity,
+          ),
+        ),
+      );
+      console.log(getProductsAndVerifyExists)
+      products.forEach((prod, index) => {
+        const product = getProductsAndVerifyExists[index];
+        product.stockQuantity -= prod.quantity;
+        updateProduct.push(product);
+
+        // Calculate the subtotal
+        const subtotal = product.SalePrice * prod.quantity;
+        totalSell += subtotal;
+
+        /* create the movement */
+
+        createMovement.push({
+          movementType: 'Venta',
+          quantity: prod.quantity,
+          reason: 'Venta de producto',
+          product,
+        });
+        // create detail_sell
+        const sellDetail = this.sellDetail.create({
+          product: product,
+          sell: null, // Se asignará más tarde después de guardar la venta
+          quantitySold: prod.quantity,
+          priceSale: product.SalePrice,
+          subtotal,
+        });
+        console.log(sellDetail);
+
+        sellDetails.push(sellDetail); // Agregar el detalle de la venta al array
       });
-      console.log(product);
 
-      if (!product) {
-        throw new NotFoundException(
-          `Product with ID ${prod.idProduct} not found`,
-        );
-      }
-
-      if (product.stockQuantity < prod.quantity) {
-        throw new BadRequestException(
-          `Not enough stock for product ${product.name}`,
-        );
-      }
-
-      product.stockQuantity -= prod.quantity;
-      await this.productRepository.save(product); // Guardar el producto actualizado
-
-      // Calculate the subtotal
-      const subtotal = product.SalePrice * prod.quantity;
-      totalSell += subtotal;
-      console.log(totalSell);
-
-      // create detail_sell
-      const sellDetail = this.sellDetail.create({
-        product: product,
-        sell: null, // Se asignará más tarde después de guardar la venta
-        quantitySold: prod.quantity,
-        priceSale: product.SalePrice,
-        subtotal,
+      const getClient = await this.clientService.findOneClient(
+        createSellDto.idClient,
+      );
+      // Guardar la venta y obtener el ID generado
+      const newSell = await this.sellRepository.save({
+        ...sell,
+        totalVenta: totalSell,
+        user: user,
+        client: getClient,
       });
-      console.log(sellDetail);
+      console.log(newSell);
 
-      sellDetails.push(sellDetail); // Agregar el detalle de la venta al array
+      // Actualizar los detalles de la venta con la referencia a la venta
+      /* TODO USE PROMISE.ALL */
+
+      Promise.all(
+        sellDetails.map((detail) =>
+          this.sellDetail.save({ ...detail, sell: newSell }),
+        ),
+      );
+      Promise.all(
+        updateProduct.map((product) =>
+          this.productService.saveProduct(product),
+        ),
+      );
+
+      console.log(JSON.stringify(createMovement, null, 2));
+      Promise.all(
+        createMovement.map((movement) =>
+          this.inventoryService.createMovement(
+            movement,
+            movement.product,
+            user,
+          ),
+        ),
+      );
+
+      return newSell;
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException(error.message);
     }
-
-    const getClient = await this.clientService.findOneClient(
-      createSellDto.idClient,
-    );
-    // Guardar la venta y obtener el ID generado
-    const newSell = await this.sellRepository.save({
-      ...sell,
-      totalVenta: totalSell,
-      user: user,
-      client: getClient,
-    });
-    console.log(newSell);
-
-    // Actualizar los detalles de la venta con la referencia a la venta
-    /* TODO USE PROMISE.ALL */
-    for (const detail of sellDetails) {
-      detail.sell = newSell; // Asignar la venta a cada detalle
-      await this.sellDetail.save(detail); // Guardar el detalle de la venta
-    }
-
-    return newSell;
   }
 
   async findSellBydId(id: number) {
     const sell = await this.sellRepository.findOne({
       where: { idSell: id },
-      relations: ['client','sellDetail'],
+      relations: ['client', 'sellDetail'],
     });
     if (!sell) {
       throw new NotFoundException(`Sell with ID ${id} not found`);
     }
     return sell;
   }
-
- 
 
   /*  update(id: number, updateSellDto: UpdateSellDto) {
     return `This action updates a #${id} sell`;

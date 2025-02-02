@@ -1,0 +1,122 @@
+import { MigrationInterface, QueryRunner } from "typeorm";
+
+export class Migration1738456504758 implements MigrationInterface {
+    name = 'Migration1738456504758'
+
+    public async up(queryRunner: QueryRunner): Promise<void> {
+        await queryRunner.query(`CREATE TABLE \`SellDetail\` (\`idDetail\` int NOT NULL AUTO_INCREMENT, \`quantitySold\` int NOT NULL, \`priceSale\` decimal(10,2) NOT NULL, \`subtotal\` decimal(10,2) NOT NULL, \`idProducto\` int NULL, \`idVenta\` int NULL, PRIMARY KEY (\`idDetail\`)) ENGINE=InnoDB`);
+        await queryRunner.query(`CREATE TABLE \`Products\` (\`id\` int NOT NULL AUTO_INCREMENT, \`name\` varchar(255) NOT NULL, \`description\` varchar(255) NULL, \`purchasePrice\` decimal(10,2) NOT NULL, \`SalePrice\` int NOT NULL, \`stockQuantity\` int NOT NULL, \`idCategory\` int NULL, \`addedBy\` int NULL, \`supplierId\` int NULL, PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
+        await queryRunner.query(`ALTER TABLE \`clients\` CHANGE \`description\` \`description\` varchar(255) NULL`);
+        await queryRunner.query(`ALTER TABLE \`clients\` CHANGE \`createdAt\` \`createdAt\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP`);
+        await queryRunner.query(`ALTER TABLE \`clients\` CHANGE \`phone\` \`phone\` int NULL`);
+        await queryRunner.query(`ALTER TABLE \`supplier\` CHANGE \`contactPhone\` \`contactPhone\` varchar(255) NULL`);
+        await queryRunner.query(`ALTER TABLE \`supplier\` CHANGE \`address\` \`address\` varchar(255) NULL`);
+        await queryRunner.query(`ALTER TABLE \`supplier\` CHANGE \`city\` \`city\` varchar(255) NULL`);
+        await queryRunner.query(`ALTER TABLE \`supplier\` CHANGE \`notes\` \`notes\` varchar(255) NULL`);
+        await queryRunner.query(`ALTER TABLE \`detail_order\` DROP FOREIGN KEY \`FK_28c643f280d3f04dd8d53c4b906\``);
+        await queryRunner.query(`ALTER TABLE \`detail_order\` CHANGE \`orderId\` \`orderId\` int NULL`);
+        await queryRunner.query(`ALTER TABLE \`detail_order\` CHANGE \`productId\` \`productId\` int NULL`);
+        await queryRunner.query(`ALTER TABLE \`orders\` DROP FOREIGN KEY \`FK_151b79a83ba240b0cb31b2302d1\``);
+        await queryRunner.query(`ALTER TABLE \`orders\` CHANGE \`userId\` \`userId\` int NULL`);
+        await queryRunner.query(`ALTER TABLE \`sells\` DROP FOREIGN KEY \`FK_49446dbb5033126e1fd64d32866\``);
+        await queryRunner.query(`ALTER TABLE \`sells\` DROP FOREIGN KEY \`FK_1aa07dca0e510a95b9723d5b4d9\``);
+        await queryRunner.query(`ALTER TABLE \`sells\` CHANGE \`sellDate\` \`sellDate\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP`);
+        await queryRunner.query(`ALTER TABLE \`sells\` CHANGE \`clientName\` \`clientName\` varchar(255) NULL`);
+        await queryRunner.query(`ALTER TABLE \`sells\` CHANGE \`idUsuario\` \`idUsuario\` int NULL`);
+        await queryRunner.query(`ALTER TABLE \`sells\` CHANGE \`idCliente\` \`idCliente\` int NULL`);
+        await queryRunner.query(`ALTER TABLE \`categories\` CHANGE \`description\` \`description\` text NULL`);
+        await queryRunner.query(`ALTER TABLE \`rental\` DROP FOREIGN KEY \`FK_5326c1fa265b0ab906191a943a7\``);
+        await queryRunner.query(`ALTER TABLE \`rental\` DROP FOREIGN KEY \`FK_aa54f1ecd2389b6bdddb907728f\``);
+        await queryRunner.query(`ALTER TABLE \`rental\` CHANGE \`sellDate\` \`sellDate\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP`);
+        await queryRunner.query(`ALTER TABLE \`rental\` CHANGE \`clientName\` \`clientName\` varchar(255) NULL`);
+        await queryRunner.query(`ALTER TABLE \`rental\` CHANGE \`endDate\` \`endDate\` datetime NULL`);
+        await queryRunner.query(`ALTER TABLE \`rental\` CHANGE \`idUsuario\` \`idUsuario\` int NULL`);
+        await queryRunner.query(`ALTER TABLE \`rental\` CHANGE \`idCliente\` \`idCliente\` int NULL`);
+        await queryRunner.query(`ALTER TABLE \`rental\` CHANGE \`productId\` \`productId\` int NULL`);
+        await queryRunner.query(`ALTER TABLE \`inventory_movements\` DROP FOREIGN KEY \`FK_63cca4adcd28b6fe19bc4ceb22f\``);
+        await queryRunner.query(`ALTER TABLE \`inventory_movements\` CHANGE \`user_id\` \`user_id\` int NULL`);
+        await queryRunner.query(`ALTER TABLE \`inventory_movements\` CHANGE \`product_id\` \`product_id\` int NULL`);
+        await queryRunner.query(`ALTER TABLE \`permissions\` CHANGE \`description\` \`description\` varchar(255) NULL`);
+        await queryRunner.query(`ALTER TABLE \`roles\` CHANGE \`description\` \`description\` varchar(255) NULL`);
+        await queryRunner.query(`ALTER TABLE \`users\` CHANGE \`createdAt\` \`createdAt\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP`);
+        await queryRunner.query(`ALTER TABLE \`users\` CHANGE \`phone\` \`phone\` int NULL`);
+        await queryRunner.query(`ALTER TABLE \`SellDetail\` ADD CONSTRAINT \`FK_d0abdd4eff181f8566f10ca8033\` FOREIGN KEY (\`idProducto\`) REFERENCES \`Products\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE \`SellDetail\` ADD CONSTRAINT \`FK_80a3525a23dd7f5d3052f02d2a3\` FOREIGN KEY (\`idVenta\`) REFERENCES \`sells\`(\`idSell\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE \`detail_order\` ADD CONSTRAINT \`FK_28c643f280d3f04dd8d53c4b906\` FOREIGN KEY (\`orderId\`) REFERENCES \`orders\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE \`detail_order\` ADD CONSTRAINT \`FK_4c3eb3ee75d81ef599c73aa396b\` FOREIGN KEY (\`productId\`) REFERENCES \`Products\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE \`orders\` ADD CONSTRAINT \`FK_151b79a83ba240b0cb31b2302d1\` FOREIGN KEY (\`userId\`) REFERENCES \`users\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE \`sells\` ADD CONSTRAINT \`FK_49446dbb5033126e1fd64d32866\` FOREIGN KEY (\`idUsuario\`) REFERENCES \`users\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE \`sells\` ADD CONSTRAINT \`FK_1aa07dca0e510a95b9723d5b4d9\` FOREIGN KEY (\`idCliente\`) REFERENCES \`clients\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE \`rental\` ADD CONSTRAINT \`FK_5326c1fa265b0ab906191a943a7\` FOREIGN KEY (\`idUsuario\`) REFERENCES \`users\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE \`rental\` ADD CONSTRAINT \`FK_aa54f1ecd2389b6bdddb907728f\` FOREIGN KEY (\`idCliente\`) REFERENCES \`clients\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE \`rental\` ADD CONSTRAINT \`FK_2fa435da96296948770716303d5\` FOREIGN KEY (\`productId\`) REFERENCES \`Products\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE \`inventory_movements\` ADD CONSTRAINT \`FK_63cca4adcd28b6fe19bc4ceb22f\` FOREIGN KEY (\`user_id\`) REFERENCES \`users\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE \`inventory_movements\` ADD CONSTRAINT \`FK_5c3bec1682252c36fa161587738\` FOREIGN KEY (\`product_id\`) REFERENCES \`Products\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE \`Products\` ADD CONSTRAINT \`FK_c31435184b77187af3e45d35d46\` FOREIGN KEY (\`idCategory\`) REFERENCES \`categories\`(\`idCategory\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE \`Products\` ADD CONSTRAINT \`FK_ee8bfb0d819ec44bdac86bc7aa1\` FOREIGN KEY (\`addedBy\`) REFERENCES \`users\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE \`Products\` ADD CONSTRAINT \`FK_e763e61479d5a20471c7f2954fa\` FOREIGN KEY (\`supplierId\`) REFERENCES \`supplier\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE \`role_permissions\` ADD CONSTRAINT \`FK_178199805b901ccd220ab7740ec\` FOREIGN KEY (\`role_id\`) REFERENCES \`roles\`(\`id\`) ON DELETE CASCADE ON UPDATE CASCADE`);
+        await queryRunner.query(`ALTER TABLE \`role_permissions\` ADD CONSTRAINT \`FK_17022daf3f885f7d35423e9971e\` FOREIGN KEY (\`permission_id\`) REFERENCES \`permissions\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE \`user_roles\` ADD CONSTRAINT \`FK_87b8888186ca9769c960e926870\` FOREIGN KEY (\`user_id\`) REFERENCES \`users\`(\`id\`) ON DELETE CASCADE ON UPDATE CASCADE`);
+        await queryRunner.query(`ALTER TABLE \`user_roles\` ADD CONSTRAINT \`FK_b23c65e50a758245a33ee35fda1\` FOREIGN KEY (\`role_id\`) REFERENCES \`roles\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
+    }
+
+    public async down(queryRunner: QueryRunner): Promise<void> {
+        await queryRunner.query(`ALTER TABLE \`user_roles\` DROP FOREIGN KEY \`FK_b23c65e50a758245a33ee35fda1\``);
+        await queryRunner.query(`ALTER TABLE \`user_roles\` DROP FOREIGN KEY \`FK_87b8888186ca9769c960e926870\``);
+        await queryRunner.query(`ALTER TABLE \`role_permissions\` DROP FOREIGN KEY \`FK_17022daf3f885f7d35423e9971e\``);
+        await queryRunner.query(`ALTER TABLE \`role_permissions\` DROP FOREIGN KEY \`FK_178199805b901ccd220ab7740ec\``);
+        await queryRunner.query(`ALTER TABLE \`Products\` DROP FOREIGN KEY \`FK_e763e61479d5a20471c7f2954fa\``);
+        await queryRunner.query(`ALTER TABLE \`Products\` DROP FOREIGN KEY \`FK_ee8bfb0d819ec44bdac86bc7aa1\``);
+        await queryRunner.query(`ALTER TABLE \`Products\` DROP FOREIGN KEY \`FK_c31435184b77187af3e45d35d46\``);
+        await queryRunner.query(`ALTER TABLE \`inventory_movements\` DROP FOREIGN KEY \`FK_5c3bec1682252c36fa161587738\``);
+        await queryRunner.query(`ALTER TABLE \`inventory_movements\` DROP FOREIGN KEY \`FK_63cca4adcd28b6fe19bc4ceb22f\``);
+        await queryRunner.query(`ALTER TABLE \`rental\` DROP FOREIGN KEY \`FK_2fa435da96296948770716303d5\``);
+        await queryRunner.query(`ALTER TABLE \`rental\` DROP FOREIGN KEY \`FK_aa54f1ecd2389b6bdddb907728f\``);
+        await queryRunner.query(`ALTER TABLE \`rental\` DROP FOREIGN KEY \`FK_5326c1fa265b0ab906191a943a7\``);
+        await queryRunner.query(`ALTER TABLE \`sells\` DROP FOREIGN KEY \`FK_1aa07dca0e510a95b9723d5b4d9\``);
+        await queryRunner.query(`ALTER TABLE \`sells\` DROP FOREIGN KEY \`FK_49446dbb5033126e1fd64d32866\``);
+        await queryRunner.query(`ALTER TABLE \`orders\` DROP FOREIGN KEY \`FK_151b79a83ba240b0cb31b2302d1\``);
+        await queryRunner.query(`ALTER TABLE \`detail_order\` DROP FOREIGN KEY \`FK_4c3eb3ee75d81ef599c73aa396b\``);
+        await queryRunner.query(`ALTER TABLE \`detail_order\` DROP FOREIGN KEY \`FK_28c643f280d3f04dd8d53c4b906\``);
+        await queryRunner.query(`ALTER TABLE \`SellDetail\` DROP FOREIGN KEY \`FK_80a3525a23dd7f5d3052f02d2a3\``);
+        await queryRunner.query(`ALTER TABLE \`SellDetail\` DROP FOREIGN KEY \`FK_d0abdd4eff181f8566f10ca8033\``);
+        await queryRunner.query(`ALTER TABLE \`users\` CHANGE \`phone\` \`phone\` int NULL DEFAULT 'NULL'`);
+        await queryRunner.query(`ALTER TABLE \`users\` CHANGE \`createdAt\` \`createdAt\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP()`);
+        await queryRunner.query(`ALTER TABLE \`roles\` CHANGE \`description\` \`description\` varchar(255) NULL DEFAULT 'NULL'`);
+        await queryRunner.query(`ALTER TABLE \`permissions\` CHANGE \`description\` \`description\` varchar(255) NULL DEFAULT 'NULL'`);
+        await queryRunner.query(`ALTER TABLE \`inventory_movements\` CHANGE \`product_id\` \`product_id\` int NULL DEFAULT 'NULL'`);
+        await queryRunner.query(`ALTER TABLE \`inventory_movements\` CHANGE \`user_id\` \`user_id\` int NULL DEFAULT 'NULL'`);
+        await queryRunner.query(`ALTER TABLE \`inventory_movements\` ADD CONSTRAINT \`FK_63cca4adcd28b6fe19bc4ceb22f\` FOREIGN KEY (\`user_id\`) REFERENCES \`users\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE \`rental\` CHANGE \`productId\` \`productId\` int NULL DEFAULT 'NULL'`);
+        await queryRunner.query(`ALTER TABLE \`rental\` CHANGE \`idCliente\` \`idCliente\` int NULL DEFAULT 'NULL'`);
+        await queryRunner.query(`ALTER TABLE \`rental\` CHANGE \`idUsuario\` \`idUsuario\` int NULL DEFAULT 'NULL'`);
+        await queryRunner.query(`ALTER TABLE \`rental\` CHANGE \`endDate\` \`endDate\` datetime NULL DEFAULT 'NULL'`);
+        await queryRunner.query(`ALTER TABLE \`rental\` CHANGE \`clientName\` \`clientName\` varchar(255) NULL DEFAULT 'NULL'`);
+        await queryRunner.query(`ALTER TABLE \`rental\` CHANGE \`sellDate\` \`sellDate\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP()`);
+        await queryRunner.query(`ALTER TABLE \`rental\` ADD CONSTRAINT \`FK_aa54f1ecd2389b6bdddb907728f\` FOREIGN KEY (\`idCliente\`) REFERENCES \`clients\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE \`rental\` ADD CONSTRAINT \`FK_5326c1fa265b0ab906191a943a7\` FOREIGN KEY (\`idUsuario\`) REFERENCES \`users\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE \`categories\` CHANGE \`description\` \`description\` text NULL DEFAULT 'NULL'`);
+        await queryRunner.query(`ALTER TABLE \`sells\` CHANGE \`idCliente\` \`idCliente\` int NULL DEFAULT 'NULL'`);
+        await queryRunner.query(`ALTER TABLE \`sells\` CHANGE \`idUsuario\` \`idUsuario\` int NULL DEFAULT 'NULL'`);
+        await queryRunner.query(`ALTER TABLE \`sells\` CHANGE \`clientName\` \`clientName\` varchar(255) NULL DEFAULT 'NULL'`);
+        await queryRunner.query(`ALTER TABLE \`sells\` CHANGE \`sellDate\` \`sellDate\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP()`);
+        await queryRunner.query(`ALTER TABLE \`sells\` ADD CONSTRAINT \`FK_1aa07dca0e510a95b9723d5b4d9\` FOREIGN KEY (\`idCliente\`) REFERENCES \`clients\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE \`sells\` ADD CONSTRAINT \`FK_49446dbb5033126e1fd64d32866\` FOREIGN KEY (\`idUsuario\`) REFERENCES \`users\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE \`orders\` CHANGE \`userId\` \`userId\` int NULL DEFAULT 'NULL'`);
+        await queryRunner.query(`ALTER TABLE \`orders\` ADD CONSTRAINT \`FK_151b79a83ba240b0cb31b2302d1\` FOREIGN KEY (\`userId\`) REFERENCES \`users\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE \`detail_order\` CHANGE \`productId\` \`productId\` int NULL DEFAULT 'NULL'`);
+        await queryRunner.query(`ALTER TABLE \`detail_order\` CHANGE \`orderId\` \`orderId\` int NULL DEFAULT 'NULL'`);
+        await queryRunner.query(`ALTER TABLE \`detail_order\` ADD CONSTRAINT \`FK_28c643f280d3f04dd8d53c4b906\` FOREIGN KEY (\`orderId\`) REFERENCES \`orders\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE \`supplier\` CHANGE \`notes\` \`notes\` varchar(255) NULL DEFAULT 'NULL'`);
+        await queryRunner.query(`ALTER TABLE \`supplier\` CHANGE \`city\` \`city\` varchar(255) NULL DEFAULT 'NULL'`);
+        await queryRunner.query(`ALTER TABLE \`supplier\` CHANGE \`address\` \`address\` varchar(255) NULL DEFAULT 'NULL'`);
+        await queryRunner.query(`ALTER TABLE \`supplier\` CHANGE \`contactPhone\` \`contactPhone\` varchar(255) NULL DEFAULT 'NULL'`);
+        await queryRunner.query(`ALTER TABLE \`clients\` CHANGE \`phone\` \`phone\` int NULL DEFAULT 'NULL'`);
+        await queryRunner.query(`ALTER TABLE \`clients\` CHANGE \`createdAt\` \`createdAt\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP()`);
+        await queryRunner.query(`ALTER TABLE \`clients\` CHANGE \`description\` \`description\` varchar(255) NULL DEFAULT 'NULL'`);
+        await queryRunner.query(`DROP TABLE \`Products\``);
+        await queryRunner.query(`DROP TABLE \`SellDetail\``);
+    }
+
+}

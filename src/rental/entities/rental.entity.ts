@@ -1,18 +1,17 @@
 import {
-  Column,
   Entity,
-  ManyToOne,
+  Column,
   PrimaryGeneratedColumn,
+  ManyToOne,
   JoinColumn,
-  OneToMany,
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Client, Product } from '../../entities';
+import { User } from '../../users/entities/user.entity';
 
-import { User, SellDetail, Client } from '../../entities';
-
-@Entity('sells')
-export class Sell {
+@Entity('rental')
+export class Rental {
   @PrimaryGeneratedColumn()
   idSell: number;
 
@@ -20,19 +19,17 @@ export class Sell {
   sellDate: Date;
 
   @Column()
-  totalSale: number;
+  totalPrice: number;
 
   @Column({ nullable: true })
   clientName: string;
 
-  @ManyToOne(() => User, (user) => user.sells)
+  @Column({ type: 'date', nullable: true })
+  endDate: Date;
+
+  @ManyToOne(() => User, (user) => user.rentals)
   @JoinColumn({ name: 'id_user' })
   user: User;
-
-  @OneToMany(() => SellDetail, (sellDetail) => sellDetail.sell, {
-    cascade: true,
-  })
-  sellDetail: SellDetail[];
 
   @ManyToOne(() => Client, (client) => client.sells) // Relación con la entidad Client
   @JoinColumn({ name: 'id_client' }) // Nombre de la columna de clave foránea
@@ -50,4 +47,7 @@ export class Sell {
     onUpdate: 'CURRENT_TIMESTAMP(6)',
   })
   updatedAt: Date;
+
+  @ManyToOne(() => Product, (product) => product.rentals, { eager: true })
+  product: Product;
 }
