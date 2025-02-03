@@ -8,7 +8,8 @@ import {
   UpdateDateColumn
 } from 'typeorm';
 import { Permission } from './permission.entity';
-import { User } from '../../entities';
+import { User } from '../../users/entities/user.entity';
+
 
 @Entity('roles')
 export class Role {

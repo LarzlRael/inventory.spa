@@ -9,8 +9,9 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Sell, Product, Role } from '../../entities';
+
 import { Rental } from '../../rental/entities/rental.entity';
+import { Sell } from '../../sells/entities/sell.entity';
 
 @Entity('clients')
 export class Client {
@@ -24,7 +25,6 @@ export class Client {
     nullable: true,
   })
   description: string;
-
 
   @Column({
     nullable: true,

@@ -8,8 +8,9 @@ import {
   UpdateDateColumn,
   OneToMany,
 } from 'typeorm';
-import { Client } from '../../entities';
+
 import { RentalDetail } from './rental-detail.entity';
+import { Client } from '../../users/entities/client.entity';
 
 @Entity('rental')
 export class Rental {
@@ -25,9 +26,9 @@ export class Rental {
   @Column({ type: 'timestamp' })
   endDate: Date;
 
-  @ManyToOne(() => Client, client => client.rentals)
+  @ManyToOne(() => Client, (client) => client.rentals)
   client: Client;
 
-  @OneToMany(() => RentalDetail, detail => detail.rental)
+  @OneToMany(() => RentalDetail, (detail) => detail.rental)
   details: RentalDetail[];
 }

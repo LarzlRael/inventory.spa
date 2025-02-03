@@ -2,8 +2,9 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Client } from '../../entities';
+
 import { Repository } from 'typeorm';
+import { Client } from '../entities/client.entity';
 
 @Injectable()
 export class ClientService {

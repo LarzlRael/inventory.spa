@@ -7,8 +7,8 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { DetailOrder } from '../entities/';
-import { Product, Order } from '../../entities';
+import { DetailOrder, Order } from '../entities/';
+import { Product } from '../../products/entities/product.entity';
 
 @Injectable()
 export class OrdersDetailService {

@@ -9,10 +9,13 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Sell, Product, Role, Order } from '../../entities';
 
 import { Rental } from '../../rental/entities/rental.entity';
 import { InventoryMovement } from '../../inventory/entities/inventory-movements.entity';
+import { Sell } from '../../sells/entities/sell.entity';
+import { Product } from '../../products/entities/product.entity';
+import { Role } from '../../roles/entities/role.entity';
+import { Order } from '../../orders/entities/orders.entity';
 
 @Entity('users')
 export class User {
@@ -36,7 +39,7 @@ export class User {
   @OneToMany(() => Sell, (sell) => sell.user)
   sells: Sell[];
 
-/*   @OneToMany(() => Rental, (rental) => rental.user)
+  /*   @OneToMany(() => Rental, (rental) => rental.user)
   rentals: Rental[]; */
 
   @OneToMany(() => Product, (product) => product.addedBy)

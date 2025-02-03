@@ -1,3 +1,4 @@
+import { Product } from '../../products/entities/product.entity';
 import {
   Entity,
   Column,
@@ -6,7 +7,6 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Product } from '../../entities';
 
 @Entity('supplier')
 export class Supplier {

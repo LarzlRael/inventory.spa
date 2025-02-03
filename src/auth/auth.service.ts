@@ -3,9 +3,10 @@ import { CreateNewUserDto, SignInDto } from './dto/credentials-auth.dto';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from '../entities';
+
 import { Repository } from 'typeorm';
 import { JWtPayload } from './interfaces/jwt.interface';
+import { User } from '../users/entities/user.entity';
 
 @Injectable()
 export class AuthService {

@@ -8,8 +8,8 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
-
-import { DetailOrder, User } from '../../entities';
+import { DetailOrder } from './order.detail.entity';
+import { User } from '../../users/entities/user.entity';
 
 @Entity('orders')
 export class Order {

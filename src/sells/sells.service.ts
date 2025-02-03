@@ -10,11 +10,12 @@ import { Sell } from './entities/sell.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { Product, User, SellDetail } from '../entities';
 import { InventoryService } from '../inventory/services/inventory.service';
 import { ProductsService } from '../products/products.service';
 import { ClientService } from '../users/services/clients.service';
 import { InventoryMovementService } from '../inventory/services/inventory-movement.service';
+import { SellDetail } from './entities/sell.detail.entity';
+import { User } from '../users/entities/user.entity';
 
 @Injectable()
 export class SellsService {

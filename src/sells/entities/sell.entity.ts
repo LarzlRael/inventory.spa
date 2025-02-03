@@ -1,3 +1,6 @@
+import { User } from '../../users/entities/user.entity';
+import { SellDetail } from './sell.detail.entity';
+import { Client } from '../../users/entities/client.entity';
 import {
   Column,
   Entity,
@@ -8,8 +11,6 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
-
-import { User, SellDetail, Client } from '../../entities';
 
 @Entity('sells')
 export class Sell {

@@ -2,6 +2,11 @@ import { Rental } from '../../rental/entities/rental.entity';
 import { RentalDetail } from '../../rental/entities/rental-detail.entity';
 import { InventoryMovement } from '../../inventory/entities/inventory-movements.entity';
 import { Inventory } from '../../inventory/entities/inventory.entity';
+import { SellDetail } from '../../sells/entities/sell.detail.entity';
+import { Category } from './category.entity';
+import { User } from '../../users/entities/user.entity';
+import { Supplier } from '../../supplier/entities/suppliers.entity';
+import { DetailOrder } from '../../orders/entities/order.detail.entity';
 import {
   Column,
   CreateDateColumn,
@@ -13,14 +18,6 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-
-import {
-  Category,
-  User,
-  Supplier,
-  DetailOrder,
-  SellDetail,
-} from '../../entities';
 
 @Entity('products')
 export class Product {

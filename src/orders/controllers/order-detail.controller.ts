@@ -12,7 +12,6 @@ import { CreateSellDto, createSellSchema } from '../dto/create-sell.dto';
 import { ZodValidationPipe } from '../../pipes/zod.validation.pipe';
 import { GetUser } from '../../pipes/get.user.decorator';
 import { AuthGuard } from '@nestjs/passport';
-import { User } from '../../entities';
 
 import { OrdersDetailService } from '../services';
 

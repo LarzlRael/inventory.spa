@@ -8,10 +8,12 @@ import { CreateProductDto, UpdateProductDto } from './dto/create-product.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { User, Product, Category } from '../entities';
 import { SupplierService } from '../supplier/suppliers.service';
 import { InventoryService } from '../inventory/services/inventory.service';
 import { InventoryMovementService } from '../inventory/services/inventory-movement.service';
+import { Product } from './entities/product.entity';
+import { Category } from './entities/category.entity';
+import { User } from '../users/entities/user.entity';
 
 @Injectable()
 export class ProductsService {

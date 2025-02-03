@@ -1,3 +1,5 @@
+import { Order } from './orders.entity';
+import { Product } from '../../products/entities/product.entity';
 import {
   Entity,
   Column,
@@ -7,7 +9,6 @@ import {
   UpdateDateColumn,
   CreateDateColumn,
 } from 'typeorm';
-import { Order, Product } from '../../entities';
 
 @Entity('detail_order')
 export class DetailOrder {

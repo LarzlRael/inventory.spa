@@ -7,7 +7,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Product } from '../../entities';
+
 import { User } from '../../users/entities/user.entity';
 import { Inventory } from './inventory.entity';
 
