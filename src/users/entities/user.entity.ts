@@ -36,8 +36,8 @@ export class User {
   @OneToMany(() => Sell, (sell) => sell.user)
   sells: Sell[];
 
-  @OneToMany(() => Rental, (rental) => rental.user)
-  rentals: Rental[];
+/*   @OneToMany(() => Rental, (rental) => rental.user)
+  rentals: Rental[]; */
 
   @OneToMany(() => Product, (product) => product.addedBy)
   products: Product[]; // Productos agregados por el usuario

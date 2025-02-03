@@ -7,8 +7,7 @@ import {
   Delete,
   UseGuards,
 } from '@nestjs/common';
-
-import { InventoryService } from './inventory.service';
+import { InventoryService } from '../services/inventory.service';
 
 @Controller('inventory')
 export class InventoryController {

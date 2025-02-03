@@ -17,7 +17,7 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import { GetUser } from '../pipes/get.user.decorator';
 import { User } from '../entities';
-import { ZodPipe } from 'src/pipes/zod.pipe';
+import { ZodPipe } from '../pipes/zod.pipe';
 
 @Controller('products')
 export class ProductsController {

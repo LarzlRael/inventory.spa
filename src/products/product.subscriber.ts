@@ -7,7 +7,7 @@ import {
 } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { Product } from './entities/product.entity';
-import { InventoryService } from '../inventory/inventory.service';
+import { InventoryService } from '../inventory/services/inventory.service';
 
 @Injectable()
 @EventSubscriber()

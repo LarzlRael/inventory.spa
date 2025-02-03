@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 import { Product } from '../../entities';
 import { User } from '../../users/entities/user.entity';
+import { Inventory } from './inventory.entity';
 
 @Entity('inventory_movements')
 export class InventoryMovement {
@@ -17,9 +18,6 @@ export class InventoryMovement {
 
   @Column()
   movementType: string; // Tipo de movimiento: "entrada", "salida"
-
-  @Column()
-  quantity: number; // Cantidad de productos movidos
 
   @ManyToOne(() => User, (user) => user.inventoryMovements)
   @JoinColumn({ name: 'user_id' }) // Foreign key en la tabla
@@ -41,7 +39,6 @@ export class InventoryMovement {
   })
   updatedAt: Date;
 
-  @ManyToOne(() => Product, (product) => product.movements)
-  @JoinColumn({ name: 'product_id' }) // Relación con la columna 'product_id' en la tabla 'inventory_movements'
-  product: Product;
+  @ManyToOne(() => Inventory, (inventory) => inventory.movements)
+  inventory: Inventory;
 }

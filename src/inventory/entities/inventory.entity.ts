@@ -1,27 +1,47 @@
-/* import {
+import { Product } from '../../products/entities/product.entity';
+import {
   Entity,
-  Column,
   PrimaryGeneratedColumn,
-  ManyToOne,
+  Column,
+  OneToOne,
   JoinColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
-import { Product } from '../../entities';
-import { User } from '../../users/entities/user.entity';
+import { InventoryMovement } from './inventory-movements.entity';
 
-@Entity('inventory')
+@Entity()
 export class Inventory {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Product, (product) => product.inventories)
-  product: Product;
+  @Column({ default: 0 })
+  quantityAvailable: number;
 
   @Column({ default: 0 })
-  stock: number;
+  quantityReserved: number;
 
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  lastUpdated: Date;
+  @OneToOne(() => Product, (product) => product.inventory)
+  @JoinColumn()
+  product: Product;
+
+  @OneToMany(
+    () => InventoryMovement,
+    (inventoryMovement) => inventoryMovement.inventory,
+  )
+  movements: InventoryMovement[];
+
+  @CreateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+  })
+  createdAt: Date;
+
+  @UpdateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+    onUpdate: 'CURRENT_TIMESTAMP(6)',
+  })
+  updatedAt: Date;
 }
- */

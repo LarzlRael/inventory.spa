@@ -1,5 +1,7 @@
 import { Rental } from '../../rental/entities/rental.entity';
+import { RentalDetail } from '../../rental/entities/rental-detail.entity';
 import { InventoryMovement } from '../../inventory/entities/inventory-movements.entity';
+import { Inventory } from '../../inventory/entities/inventory.entity';
 import {
   Column,
   CreateDateColumn,
@@ -7,8 +9,9 @@ import {
   JoinColumn,
   ManyToOne,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
-  UpdateDateColumn
+  UpdateDateColumn,
 } from 'typeorm';
 
 import {
@@ -44,14 +47,8 @@ export class Product {
   @Column()
   SalePrice: number;
 
-  @Column()
-  stockQuantity: number;
-
   @OneToMany(() => SellDetail, (sellDetail) => sellDetail.product)
   sellDetails: SellDetail[];
-
-  @OneToMany(() => Rental, (rental) => rental.product)
-  rentals: Rental[];
 
   @ManyToOne(() => Category, (category) => category.products)
   @JoinColumn({ name: 'id_category' })
@@ -67,13 +64,12 @@ export class Product {
   @OneToMany(() => DetailOrder, (detailOrder) => detailOrder.product)
   detailOrders: DetailOrder[];
 
-  @OneToMany(
-    () => InventoryMovement,
-    (inventoryMovement) => inventoryMovement.product,
-  )
-  movements: InventoryMovement[];
+  @OneToMany(() => RentalDetail, (rentalDetail) => rentalDetail.product)
+  rentalDetails: RentalDetail[];
 
-
+  @OneToOne(() => Inventory, (inventory) => inventory.product)
+  @JoinColumn()
+  inventory: Inventory;
 
   @CreateDateColumn({
     type: 'timestamp',

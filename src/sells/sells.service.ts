@@ -11,9 +11,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { Product, User, SellDetail } from '../entities';
-import { ClientService } from 'src/users/services';
-import { InventoryService } from '../inventory/inventory.service';
-import { ProductsService } from 'src/products/products.service';
+import { InventoryService } from '../inventory/services/inventory.service';
+import { ProductsService } from '../products/products.service';
+import { ClientService } from '../users/services/clients.service';
+import { InventoryMovementService } from '../inventory/services/inventory-movement.service';
 
 @Injectable()
 export class SellsService {
@@ -21,11 +22,12 @@ export class SellsService {
     @InjectRepository(Sell)
     private sellRepository: Repository<Sell>,
     @InjectRepository(SellDetail)
-    private sellDetail: Repository<SellDetail>,
+    private sellDetailRepository: Repository<SellDetail>,
 
     private productService: ProductsService,
     private clientService: ClientService,
     private inventoryService: InventoryService,
+    private inventoryMovementService: InventoryMovementService,
   ) {}
   async createNewSell(user: User, createSellDto: CreateSellDto) {
     const { clientName, products } = createSellDto;
@@ -43,6 +45,7 @@ export class SellsService {
     const sellDetails = []; // Array para almacenar los detalles de la venta
     const updateProduct = [];
     const createMovement = [];
+    const updateInventory = [];
 
     try {
       const getProductsAndVerifyExists = await Promise.all(
@@ -53,10 +56,13 @@ export class SellsService {
           ),
         ),
       );
-      console.log(getProductsAndVerifyExists)
+
       products.forEach((prod, index) => {
         const product = getProductsAndVerifyExists[index];
-        product.stockQuantity -= prod.quantity;
+        const productInventory = product.inventory;
+
+        productInventory.quantityAvailable -= prod.quantity;
+        updateInventory.push(productInventory);
         updateProduct.push(product);
 
         // Calculate the subtotal
@@ -69,17 +75,16 @@ export class SellsService {
           movementType: 'Venta',
           quantity: prod.quantity,
           reason: 'Venta de producto',
-          product,
+          inventory: productInventory,
         });
         // create detail_sell
-        const sellDetail = this.sellDetail.create({
+        const sellDetail = this.sellDetailRepository.create({
           product: product,
           sell: null, // Se asignará más tarde después de guardar la venta
           quantitySold: prod.quantity,
           priceSale: product.SalePrice,
           subtotal,
         });
-        console.log(sellDetail);
 
         sellDetails.push(sellDetail); // Agregar el detalle de la venta al array
       });
@@ -90,18 +95,17 @@ export class SellsService {
       // Guardar la venta y obtener el ID generado
       const newSell = await this.sellRepository.save({
         ...sell,
-        totalVenta: totalSell,
+        totalSale: totalSell,
         user: user,
         client: getClient,
       });
-      console.log(newSell);
 
       // Actualizar los detalles de la venta con la referencia a la venta
       /* TODO USE PROMISE.ALL */
 
       Promise.all(
         sellDetails.map((detail) =>
-          this.sellDetail.save({ ...detail, sell: newSell }),
+          this.sellDetailRepository.save({ ...detail, sell: newSell }),
         ),
       );
       Promise.all(
@@ -109,14 +113,19 @@ export class SellsService {
           this.productService.saveProduct(product),
         ),
       );
+      Promise.all(
+        updateInventory.map((product) =>
+          this.inventoryService.updateInventory(product),
+        ),
+      );
 
-      console.log(JSON.stringify(createMovement, null, 2));
       Promise.all(
         createMovement.map((movement) =>
-          this.inventoryService.createMovement(
-            movement,
-            movement.product,
+          this.inventoryMovementService.createMovement(
+            movement.inventory,
             user,
+            movement.movementType,
+            movement.reason,
           ),
         ),
       );

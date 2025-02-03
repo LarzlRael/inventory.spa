@@ -1,18 +1,21 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { ProductsModule } from './products/products.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import typeorm from './config/typeorm';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { APP_PIPE } from '@nestjs/core';
+import { ZodValidationPipe } from 'nestjs-zod';
+
+/* Modules */
+import { ProductsModule } from './products/products.module';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { SellsModule } from './sells/sells.module';
-import { APP_PIPE } from '@nestjs/core';
-import { ZodValidationPipe } from 'nestjs-zod';
 import { RolesModule } from './roles/roles.module';
 import { OrdersModule } from './orders/orders.module';
 import { SuppliersModule } from './supplier/supplier.module';
+import { RentalModule } from './rental/rental.module';
 
 @Module({
   imports: [
@@ -33,6 +36,7 @@ import { SuppliersModule } from './supplier/supplier.module';
     RolesModule,
     OrdersModule,
     SuppliersModule,
+    RentalModule
   ],
   controllers: [AppController],
   providers: [

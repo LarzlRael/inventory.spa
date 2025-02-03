@@ -7,10 +7,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Product } from './entities/product.entity';
 import { Category } from './entities/category.entity';
 
-/* import { InventoryMovement } from 'src/inventory/entities/inventory.entity'; */
 import { ProductSubscriber } from './product.subscriber';
 import { SuppliersModule } from '../supplier/supplier.module';
-import { InventoryMovementModule } from 'src/inventory/inventory.module';
+import { InventoryMovementModule } from '../inventory/inventory.module';
 
 @Module({
   imports: [

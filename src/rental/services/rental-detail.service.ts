@@ -1,21 +1,18 @@
-
-
 import {
   BadRequestException,
-  Injectable,
   NotFoundException,
+  Injectable,
 } from '@nestjs/common';
 
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-
-import { Rental } from './entities/rental.entity';
+import { RentalDetail } from '../entities/rental-detail.entity';
 
 @Injectable()
-export class RentalService {
+export class RentalDetailService {
   constructor(
-    @InjectRepository(Rental)
-    private rentalRepository: Repository<Rental>,
+    @InjectRepository(RentalDetail)
+    private rentalDetailRepository: Repository<RentalDetail>,
   ) {}
 
   async createMovement() {}

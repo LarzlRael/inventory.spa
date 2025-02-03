@@ -6,48 +6,28 @@ import {
   JoinColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
-import { Client, Product } from '../../entities';
-import { User } from '../../users/entities/user.entity';
+import { Client } from '../../entities';
+import { RentalDetail } from './rental-detail.entity';
 
 @Entity('rental')
 export class Rental {
   @PrimaryGeneratedColumn()
-  idSell: number;
+  id: number;
 
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  sellDate: Date;
+  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  total: number;
 
-  @Column()
-  totalPrice: number;
+  @Column({ type: 'timestamp' })
+  startDate: Date;
 
-  @Column({ nullable: true })
-  clientName: string;
-
-  @Column({ type: 'date', nullable: true })
+  @Column({ type: 'timestamp' })
   endDate: Date;
 
-  @ManyToOne(() => User, (user) => user.rentals)
-  @JoinColumn({ name: 'id_user' })
-  user: User;
-
-  @ManyToOne(() => Client, (client) => client.sells) // Relación con la entidad Client
-  @JoinColumn({ name: 'id_client' }) // Nombre de la columna de clave foránea
+  @ManyToOne(() => Client, client => client.rentals)
   client: Client;
 
-  @CreateDateColumn({
-    type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP(6)',
-  })
-  createdAt: Date;
-
-  @UpdateDateColumn({
-    type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP(6)',
-    onUpdate: 'CURRENT_TIMESTAMP(6)',
-  })
-  updatedAt: Date;
-
-  @ManyToOne(() => Product, (product) => product.rentals, { eager: true })
-  product: Product;
+  @OneToMany(() => RentalDetail, detail => detail.rental)
+  details: RentalDetail[];
 }

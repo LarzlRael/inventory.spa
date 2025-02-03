@@ -10,7 +10,8 @@ import { Repository } from 'typeorm';
 
 import { User, Product, Category } from '../entities';
 import { SupplierService } from '../supplier/suppliers.service';
-import { InventoryService } from 'src/inventory/inventory.service';
+import { InventoryService } from '../inventory/services/inventory.service';
+import { InventoryMovementService } from '../inventory/services/inventory-movement.service';
 
 @Injectable()
 export class ProductsService {
@@ -22,9 +23,9 @@ export class ProductsService {
 
     private supplierService: SupplierService,
     private inventoryService: InventoryService,
+    private inventoryMovementService: InventoryMovementService,
   ) {}
   async createNewProduct(user: User, createProductDto: CreateProductDto) {
-    console.log(createProductDto);
     const category = await this.categoryRepository.findOne({
       where: { idCategory: createProductDto.idCategory },
     });
@@ -42,14 +43,26 @@ export class ProductsService {
       const newProductCreated =
         await this.productRepository.save(createNewProduct);
 
-      await this.inventoryService.createMovement(
-        {
-          movementType: 'IN',
-          quantity: createProductDto.stockQuantity,
-          reason: 'Initial stock',
-        },
+      /* const inventory = this.inventoryRepository.create({
+        quantityAvailable: createProductDto.quantityAvailable,
+        quantityReserved: 0, // Inicialmente no hay reservas
+        product: savedProduct,
+      }); */
+      const saveInventory = await this.inventoryService.saveInventory(
         newProductCreated,
+        createProductDto.stockQuantity,
+      );
+      /* Save the inventory */
+      await this.productRepository.save({
+        ...newProductCreated,
+        inventory: saveInventory,
+      });
+
+      await this.inventoryMovementService.createMovement(
+        saveInventory,
         user,
+        'Initial stock',
+        'Initial stock creation',
       );
 
       return newProductCreated;
@@ -104,7 +117,7 @@ export class ProductsService {
   }
 
   async productsStock(id: number) {
-    try {
+    /* try {
       const product = await this.productRepository.findOne({
         where: { id: id },
       });
@@ -115,7 +128,7 @@ export class ProductsService {
       };
     } catch (error) {
       throw new InternalServerErrorException(error);
-    }
+    } */
   }
 
   async findProductById(idProduct: number): Promise<Product> {
@@ -128,19 +141,18 @@ export class ProductsService {
     return product;
   }
 
-  async findProductByIdAndVerifyStock(
-    idProduct: number,
-    quantity: number,
-  ): Promise<Product> {
+  async findProductByIdAndVerifyStock(idProduct: number, quantity: number) {
     try {
       const product = await this.productRepository.findOne({
         where: { id: idProduct },
+        relations: ['inventory'],
       });
+      console.log(product);
       if (!product) {
         throw new NotFoundException(`Product with ID ${idProduct} not found`);
       }
-      console.log(product);
-      if (product.stockQuantity < quantity) {
+      const inventory = product.inventory;
+      if (inventory.quantityAvailable < quantity) {
         throw new InternalServerErrorException(
           `Product with ID ${idProduct} has not enough stock`,
         );
