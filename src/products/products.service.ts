@@ -11,9 +11,11 @@ import { Repository } from 'typeorm';
 import { SupplierService } from '../supplier/suppliers.service';
 import { InventoryService } from '../inventory/services/inventory.service';
 import { InventoryMovementService } from '../inventory/services/inventory-movement.service';
+import { FilesUploadService } from '../files-upload/files-upload.service';
 import { Product } from './entities/product.entity';
 import { Category } from './entities/category.entity';
 import { User } from '../users/entities/user.entity';
+import { ImageInfoInterface } from './interfaces/file-to-return';
 
 @Injectable()
 export class ProductsService {
@@ -26,6 +28,7 @@ export class ProductsService {
     private supplierService: SupplierService,
     private inventoryService: InventoryService,
     private inventoryMovementService: InventoryMovementService,
+    private uploadFilesService: FilesUploadService,
   ) {}
   async createNewProduct(user: User, createProductDto: CreateProductDto) {
     const category = await this.categoryRepository.findOne({
@@ -71,6 +74,45 @@ export class ProductsService {
     } catch (error) {
       console.log(error);
       throw new InternalServerErrorException(error);
+    }
+  }
+
+  async updateImageFileCourseInformation(
+    idCourse: number,
+    user: User,
+    imageCourse: Express.Multer.File,
+  ) {
+    let imageInfo: ImageInfoInterface = {
+      publicId: '',
+      secureUrl: '',
+    };
+
+    // Obtener el curso existente por su ID
+    const getCourse = await this.productRepository.findOne({
+      where: { id: idCourse },
+    });
+    // Si se carga una nueva imagen, actualizar la información de la imagen
+    if (imageCourse) {
+      imageInfo = await this.uploadFilesService.uploadFile(
+        imageCourse,
+        'COURSES_IMAGES',
+      );
+    }
+
+    // Manejo de errores
+    try {
+      // Actualizar los datos del curso existente con los nuevos datos
+      const updatedCourse = await this.productRepository.save({
+        ...getCourse, // Mantiene los datos existentes
+        imageUrl: imageInfo.secureUrl,
+        imagePublicId: imageInfo.publicId,
+        updatedBy: user, // Asumimos que se guarda el usuario que actualiza
+      });
+
+      return updatedCourse;
+    } catch (error) {
+      console.error('Error updating course:', error);
+      throw new InternalServerErrorException();
     }
   }
 

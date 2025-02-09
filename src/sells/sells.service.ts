@@ -141,7 +141,7 @@ export class SellsService {
   async findSellBydId(id: number) {
     const sell = await this.sellRepository.findOne({
       where: { idSell: id },
-      relations: ['client', 'sellDetail'],
+      relations: ['client', 'sellDetail', 'sellDetail.product'],
     });
     if (!sell) {
       throw new NotFoundException(`Sell with ID ${id} not found`);
@@ -149,9 +149,20 @@ export class SellsService {
     return sell;
   }
 
-  /*  update(id: number, updateSellDto: UpdateSellDto) {
-    return `This action updates a #${id} sell`;
-  } */
+  async findAllSells() {
+    try {
+      const sell = await this.sellRepository.find({
+        relations: ['client', 'sellDetail', 'sellDetail.product'],
+        order: { createdAt: 'DESC' },
+      });
+      if (!sell) {
+        throw new NotFoundException('No sells found');
+      }
+      return sell;
+    } catch (error) {
+      throw new InternalServerErrorException(error.message);
+    }
+  }
 
   remove(id: number) {
     return `This action removes a #${id} sell`;

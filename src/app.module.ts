@@ -16,6 +16,7 @@ import { RolesModule } from './roles/roles.module';
 import { OrdersModule } from './orders/orders.module';
 import { SuppliersModule } from './supplier/supplier.module';
 import { RentalModule } from './rental/rental.module';
+import { FilesUploadModule } from './files-upload/files-upload.module';
 
 @Module({
   imports: [
@@ -36,7 +37,8 @@ import { RentalModule } from './rental/rental.module';
     RolesModule,
     OrdersModule,
     SuppliersModule,
-    RentalModule
+    RentalModule,
+    FilesUploadModule,
   ],
   controllers: [AppController],
   providers: [

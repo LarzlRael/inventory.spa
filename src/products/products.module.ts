@@ -10,12 +10,14 @@ import { Category } from './entities/category.entity';
 import { ProductSubscriber } from './product.subscriber';
 import { SuppliersModule } from '../supplier/supplier.module';
 import { InventoryMovementModule } from '../inventory/inventory.module';
+import { FilesUploadModule } from '../files-upload/files-upload.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Product, Category]),
     SuppliersModule,
     InventoryMovementModule,
+    FilesUploadModule,
   ],
   controllers: [ProductsController, CategoryController],
   providers: [ProductsService, CategoryService, ProductSubscriber],

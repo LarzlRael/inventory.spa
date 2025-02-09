@@ -6,7 +6,7 @@ import { configEnvs } from './env';
 dotenvConfig({ path: '.env' });
 
 const config = {
-  type: 'mysql', // Cambiado de 'postgres' a 'mysql'
+  type: 'postgres', // Cambiado de 'postgres' a 'mysql'
   host: configEnvs.databaseHost,
   port: configEnvs.databasePort, // Asegúrate de que esté en el puerto correcto de MySQL (por defecto 3306)
   username: configEnvs.databaseUsername,
@@ -18,7 +18,7 @@ const config = {
   autoLoadEntities: true,
   // Deberías ajustar esto según tu entorno (falso en producción)
   synchronize: false,
-  /* ssl: false, */
+  ssl: true,
 };
 
 export default registerAs('typeorm', () => config);

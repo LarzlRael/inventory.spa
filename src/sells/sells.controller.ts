@@ -28,6 +28,12 @@ export class SellsController {
   }
 
   @UseGuards(AuthGuard('jwt'))
+  @Get()
+  getLast() {
+    return this.sellsService.findAllSells();
+  }
+
+  @UseGuards(AuthGuard('jwt'))
   @Get('find-sell-by-id/:id')
   findOne(@Param('id') id: string) {
     return this.sellsService.findSellBydId(+id);

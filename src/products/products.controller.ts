@@ -7,6 +7,8 @@ import {
   Delete,
   UseGuards,
   Put,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import {
@@ -19,6 +21,8 @@ import { GetUser } from '../pipes/get.user.decorator';
 
 import { ZodPipe } from '../pipes/zod.pipe';
 import { User } from '../users/entities/user.entity';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { fileFilter } from '../files-upload/utils/upload.utils';
 
 @Controller('products')
 export class ProductsController {
@@ -62,5 +66,24 @@ export class ProductsController {
   @Get('/stock-product/:id')
   getStockProduct(@Param('id') id: string) {
     return this.productsService.productsStock(+id);
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @UseInterceptors(
+    FileInterceptor('productImage', {
+      fileFilter: fileFilter,
+    }),
+  )
+  @Put('update-image/:idProduct')
+  createCourse(
+    @GetUser() user: User,
+    @UploadedFile() imageCourse: Express.Multer.File,
+    @Param('idProduct') id: string,
+  ) {
+    return this.productsService.updateImageFileCourseInformation(
+      +id,
+      user,
+      imageCourse,
+    );
   }
 }
